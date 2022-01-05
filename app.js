@@ -57,6 +57,12 @@ async function main() {
 
     const newAddedItemQuery = await circulationRepo.getById(addedItem._id);
     assert.equal(newAddedItemQuery, 'My new paper');
+
+    const removed = await circulationRepo.remove(addedItem._id);
+    assert(removed);
+
+    const deletedItem = await circulationRepo.getById(addedItem._id);
+    assert.equal(deletedItem, null);
   } catch (error) {
     console.log(error);
   } finally {

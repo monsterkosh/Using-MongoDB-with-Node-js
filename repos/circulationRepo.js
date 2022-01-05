@@ -89,13 +89,32 @@ function circulationRepo() {
             returnOriginal: false,
           });
         resolve(updatedItem.value);
+        client.close();
       } catch (error) {
         reject(error);
       }
     });
   }
 
-  return { loadData, get, getById, add };
+  function remove(id) {
+    return new Promise(async (resolve, reject) => {
+      const client = new MongoClient(url);
+      try {
+        await client.connect();
+        const db = client.db(dbName);
+        const removed = db
+          .collection('newspapers')
+          .deleteOne({ _id: ObjectID(id) });
+
+        resolve(removed.deletedCount);
+        client.close();
+      } catch (error) {
+        reject(error);
+      }
+    });
+  }
+
+  return { loadData, get, getById, add, update, remove };
 }
 
 module.exports = circulationRepo();
