@@ -56,19 +56,24 @@ async function main() {
     assert.equal(updatedItem.Newspaper, 'My new paper');
 
     const newAddedItemQuery = await circulationRepo.getById(addedItem._id);
-    assert.equal(newAddedItemQuery, 'My new paper');
+    assert.equal(newAddedItemQuery.Newspaper, 'My new paper');
 
     const removed = await circulationRepo.remove(addedItem._id);
     assert(removed);
 
     const deletedItem = await circulationRepo.getById(addedItem._id);
     assert.equal(deletedItem, null);
+
+    const averageFinalists = await circulationRepo.averageFinalists();
+    console.log(averageFinalists);
+
+    const avgByChange = await circulationRepo.averageFinalistsByChange();
+    console.log(avgByChange);
   } catch (error) {
     console.log(error);
   } finally {
     const admin = client.db(dbName).admin();
     await client.db(dbName).dropDatabase();
-
     console.log(await admin.listDatabases());
     client.close();
   }
